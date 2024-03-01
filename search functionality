@@ -1,0 +1,131 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+class Book {
+    // ... (unchanged)
+
+    // Add a method to check if a book title contains the search query
+    public boolean containsTitle(String query) {
+        return getTitle().toLowerCase().contains(query.toLowerCase());
+    }
+
+    // Add a method to check if a book author contains the search query
+    public boolean containsAuthor(String query) {
+        return getAuthor().toLowerCase().contains(query.toLowerCase());
+    }
+
+    // Add a method to check if a book genre contains the search query
+    public boolean containsGenre(String query) {
+        return getGenre().toLowerCase().contains(query.toLowerCase());
+    }
+}
+
+class Patron {
+    // ... (unchanged)
+
+    // Add a method to check if a patron name contains the search query
+    public boolean containsName(String query) {
+        return getName().toLowerCase().contains(query.toLowerCase());
+    }
+}
+
+class BookManager {
+    // ... (unchanged)
+
+    // Add a method to search books by title, author, or genre
+    public List<Book> searchBooks(String query) {
+        List<Book> results = new ArrayList<>();
+        for (Book book : books) {
+            if (book.containsTitle(query) || book.containsAuthor(query) || book.containsGenre(query)) {
+                results.add(book);
+            }
+        }
+        return results;
+    }
+
+    // Add a method to get a book by title
+    public Book getBookByTitle(String title) {
+        for (Book book : books) {
+            if (book.getTitle().equalsIgnoreCase(title)) {
+                return book;
+            }
+        }
+        return null;
+    }
+}
+
+class PatronManager {
+    // ... (unchanged)
+
+    // Add a method to search patrons by name
+    public List<Patron> searchPatrons(String query) {
+        List<Patron> results = new ArrayList<>();
+        for (Patron patron : patrons) {
+            if (patron.containsName(query)) {
+                results.add(patron);
+            }
+        }
+        return results;
+    }
+
+    // ... (unchanged)
+}
+
+public class LibraryManagementSystemWithSearch {
+    public static void main(String[] args) {
+        // ... (unchanged)
+
+        int choice;
+        do {
+            System.out.println("Library Management System Menu:");
+            System.out.println("1. Display Books");
+            System.out.println("2. Display Patrons");
+            System.out.println("3. Check Out a Book");
+            System.out.println("4. Return a Book");
+            System.out.println("5. Search Books");
+            System.out.println("6. Search Patrons");
+            System.out.println("0. Exit");
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+
+            switch (choice) {
+                // ... (unchanged)
+                case 5:
+                    // Search Books
+                    scanner.nextLine(); // Consume the newline character
+                    System.out.print("Enter search query: ");
+                    String bookSearchQuery = scanner.nextLine();
+                    List<Book> bookSearchResults = bookManager.searchBooks(bookSearchQuery);
+                    if (!bookSearchResults.isEmpty()) {
+                        System.out.println("Search Results for Books:");
+                        for (Book result : bookSearchResults) {
+                            System.out.println(result);
+                        }
+                    } else {
+                        System.out.println("No books found matching the search query.");
+                    }
+                    break;
+                case 6:
+                    // Search Patrons
+                    scanner.nextLine(); // Consume the newline character
+                    System.out.print("Enter search query: ");
+                    String patronSearchQuery = scanner.nextLine();
+                    List<Patron> patronSearchResults = patronManager.searchPatrons(patronSearchQuery);
+                    if (!patronSearchResults.isEmpty()) {
+                        System.out.println("Search Results for Patrons:");
+                        for (Patron result : patronSearchResults) {
+                            System.out.println(result);
+                        }
+                    } else {
+                        System.out.println("No patrons found matching the search query.");
+                    }
+                    break;
+                // ... (unchanged)
+            }
+
+        } while (choice != 0);
+
+        scanner.close();
+    }
+}
