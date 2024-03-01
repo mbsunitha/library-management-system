@@ -1,0 +1,124 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+class Book {
+    // ... (unchanged)
+
+    @Override
+    public String toString() {
+        return "Title: " + getTitle() +
+                "\nAuthor: " + getAuthor() +
+                "\nGenre: " + getGenre() +
+                "\nAvailability: " + (isAvailable() ? "Available" : "Not Available") +
+                "\n-----------------------------";
+    }
+}
+
+class Patron {
+    // ... (unchanged)
+
+    @Override
+    public String toString() {
+        return "Name: " + getName() +
+                "\nContact Info: " + getContactInfo() +
+                "\nBorrowing History: " + getBorrowingHistory() +
+                "\n-----------------------------";
+    }
+}
+
+class PatronManager {
+    // ... (unchanged)
+
+    public Patron getPatronByName(String name) {
+        for (Patron patron : patrons) {
+            if (patron.getName().equalsIgnoreCase(name)) {
+                return patron;
+            }
+        }
+        return null;
+    }
+}
+
+class LibraryManagementSystemWithBorrowing {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        BookManager bookManager = new BookManager();
+        PatronManager patronManager = new PatronManager();
+
+        // Adding sample books and patrons to the library
+        // ... (unchanged)
+
+        int choice;
+        do {
+            System.out.println("Library Management System Menu:");
+            System.out.println("1. Display Books");
+            System.out.println("2. Display Patrons");
+            System.out.println("3. Check Out a Book");
+            System.out.println("4. Return a Book");
+            System.out.println("0. Exit");
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    bookManager.displayBooks();
+                    break;
+                case 2:
+                    patronManager.displayPatrons();
+                    break;
+                case 3:
+                    // Check Out a Book
+                    scanner.nextLine(); // Consume the newline character
+                    System.out.print("Enter patron name: ");
+                    String patronName = scanner.nextLine();
+                    Patron checkOutPatron = patronManager.getPatronByName(patronName);
+                    if (checkOutPatron != null) {
+                        System.out.print("Enter the title of the book to check out: ");
+                        String checkOutTitle = scanner.nextLine();
+                        Book checkOutBook = bookManager.getBookByTitle(checkOutTitle);
+                        if (checkOutBook != null && checkOutBook.isAvailable()) {
+                            checkOutPatron.borrowBook(checkOutBook);
+                            checkOutBook.setAvailable(false);
+                            System.out.println("Book \"" + checkOutTitle + "\" checked out successfully by " + patronName + ".");
+                        } else {
+                            System.out.println("Book \"" + checkOutTitle + "\" not available for checkout.");
+                        }
+                    } else {
+                        System.out.println("Patron \"" + patronName + "\" not found.");
+                    }
+                    break;
+                case 4:
+                    // Return a Book
+                    scanner.nextLine(); // Consume the newline character
+                    System.out.print("Enter patron name: ");
+                    String returnPatronName = scanner.nextLine();
+                    Patron returnPatron = patronManager.getPatronByName(returnPatronName);
+                    if (returnPatron != null) {
+                        System.out.print("Enter the title of the book to return: ");
+                        String returnTitle = scanner.nextLine();
+                        Book returnBook = bookManager.getBookByTitle(returnTitle);
+                        if (returnBook != null && !returnBook.isAvailable() && returnPatron.getBorrowingHistory().contains(returnBook)) {
+                            returnPatron.returnBook(returnBook);
+                            returnBook.setAvailable(true);
+                            System.out.println("Book \"" + returnTitle + "\" returned successfully by " + returnPatronName + ".");
+                        } else {
+                            System.out.println("Book \"" + returnTitle + "\" cannot be returned.");
+                        }
+                    } else {
+                        System.out.println("Patron \"" + returnPatronName + "\" not found.");
+                    }
+                    break;
+                case 0:
+                    System.out.println("Exiting the Library Management System. Goodbye!");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please enter a valid option.");
+                    break;
+            }
+
+        } while (choice != 0);
+
+        scanner.close();
+    }
+}
